@@ -1,0 +1,112 @@
+#include<Servo.h>
+int servopin1=10;
+int servopin2=2;
+int servopin3=3;
+Servo mypointer1;
+Servo mypointer2;
+Servo mypointer3;
+float speedofsound=776.5;//in miles per hours
+int trigpin1=7;   //US1
+int echopin1=6;   //US1
+int trigpin2=9;   //US2
+int echopin2=8;    //US2
+int trigpin3=4;   //US3
+int echopin3=5;   //US3
+float pingtime1;
+float distance1;
+float pingtime2;
+float distance2;
+float pingtime3;
+float distance3;
+float servoangle1;
+float servoangle2;
+float servoangle3;
+void setup() {
+  Serial.begin(9600);
+  mypointer1.attach(servopin1);
+  mypointer2.attach(servopin2);
+  mypointer3.attach(servopin3);
+  pinMode(servopin1,OUTPUT);
+  pinMode(servopin2,OUTPUT);
+  pinMode(servopin3,OUTPUT);
+  pinMode(trigpin1,OUTPUT);
+  pinMode(echopin1,INPUT);
+  pinMode(trigpin2,OUTPUT);
+  pinMode(echopin2,INPUT);
+  pinMode(trigpin3,OUTPUT);
+  pinMode(echopin3,INPUT);
+}
+
+void loop() {
+
+    digitalWrite(trigpin1,LOW);
+  delayMicroseconds(2000);
+  digitalWrite(trigpin1,HIGH);
+  delayMicroseconds(10);
+  digitalWrite(trigpin1,LOW);
+   pingtime1=pulseIn(echopin1,HIGH);
+   pingtime1=pingtime1/1000000;
+  pingtime1=pingtime1/3600;
+  distance1 = speedofsound*pingtime1;
+  distance1=distance1/2;
+  distance1=distance1*63360;
+  distance1=distance1*2.54;   // -1 is for minimize error distance which is occur with sensor
+   Serial.print("the distance to the target is U1:");
+   Serial.print(distance1);
+   Serial.println("cm");
+  
+  digitalWrite(trigpin2,LOW);
+  delayMicroseconds(2000);
+  digitalWrite(trigpin2,HIGH);
+  delayMicroseconds(10);
+  digitalWrite(trigpin2,LOW);
+   pingtime2=pulseIn(echopin2,HIGH);
+   pingtime2=pingtime2/1000000;
+  pingtime2=pingtime2/3600;
+  distance2 = speedofsound*pingtime2;
+  distance2=distance2/2;
+  distance2=distance2*63360;
+  distance2=distance2*2.54;   // -1 is for minimize error distance which is occur with sensor
+   Serial.print("the distance to the target is U2:");
+   Serial.print(distance2);
+   Serial.println("cm");
+
+  digitalWrite(trigpin3,LOW);
+  delayMicroseconds(2000);
+  digitalWrite(trigpin3,HIGH);
+  delayMicroseconds(10);
+  digitalWrite(trigpin3,LOW);
+   pingtime3=pulseIn(echopin3,HIGH); 
+  pingtime3=pingtime3/1000000;
+  pingtime3=pingtime3/3600;
+  distance3 = speedofsound*pingtime3;
+  distance3=distance3/2;
+  distance3=distance3*63360;
+  distance3=distance3*2.54;   // -1 is for minimize error distance which is occur with sensor
+   Serial.print("the distance to the target is U3:");
+   Serial.print(distance3);
+   Serial.println("cm");
+
+   mypointer1.write(90); 
+   mypointer2.write(90);
+   mypointer3.write(90);
+
+   if(distance1<=5)
+     {
+      mypointer1.write(30);
+      delay(1000);
+      mypointer1.write(90);
+     }
+
+   if((distance2<=5)||(distance3<=5))
+     {
+       mypointer2.write(30);
+       mypointer3.write(160);
+       delay(1000);
+        mypointer2.write(90);
+         mypointer3.write(90);
+       
+     }
+     delay(2000);
+   
+}
